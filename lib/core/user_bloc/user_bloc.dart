@@ -14,6 +14,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this._firebaseService) : super(UserState.initial()) {
     on<FetchUserData>(_onFetchUserData);
     on<SetUserData>(_onSetUserData);
+    on<SetErrorMsg>(_onSetErrorMsg);
   }
   Future<void> _onFetchUserData(
       FetchUserData event, Emitter<UserState> emit) async {
@@ -54,15 +55,25 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
 
       if (isSuccess) {
-        print('User Registered');
+        print('User successfully registered.');
         emit(state.copyWith(userDataSetStatus: DataFetchStatus.done));
       } else {
-        print('User NOT Registered');
-        emit(state.copyWith(userDataSetStatus: DataFetchStatus.corrupted));
+        print('User registration failed.');
+        emit(state.copyWith(
+          userDataSetStatus: DataFetchStatus.corrupted,
+          error: 'Unable to register user..',
+        ));
       }
     } catch (e) {
-      print('User NOT Registered');
-      emit(state.copyWith(userDataSetStatus: DataFetchStatus.corrupted));
+      print('An unexpected error occurred during registration.');
+      emit(state.copyWith(
+        userDataSetStatus: DataFetchStatus.corrupted,
+        error: 'An unexpected error occurred.',
+      ));
     }
+  }
+
+  Future<void> _onSetErrorMsg(SetErrorMsg event, emit) async {
+    emit(state.copyWith(error: event.error));
   }
 }
