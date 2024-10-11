@@ -1,6 +1,8 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
 class DeviceService {
   Future<String> getDeviceId() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
@@ -20,5 +22,11 @@ class DeviceService {
     }
 
     return deviceId;
+  }
+
+  Future<String> getAppVersion() async {
+    print('run getAppVersion');
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.version;
   }
 }

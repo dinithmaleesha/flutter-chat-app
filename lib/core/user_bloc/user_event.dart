@@ -16,8 +16,3 @@ class SetUserData extends UserEvent {
     required this.fcmToken
   });
 }
-
-class SetErrorMsg extends UserEvent {
-  final String error;
-  SetErrorMsg({required this.error});
-}

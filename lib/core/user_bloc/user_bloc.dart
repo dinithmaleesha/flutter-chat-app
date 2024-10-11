@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 part 'user_event.dart';
+
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
@@ -14,8 +15,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this._firebaseService) : super(UserState.initial()) {
     on<FetchUserData>(_onFetchUserData);
     on<SetUserData>(_onSetUserData);
-    on<SetErrorMsg>(_onSetErrorMsg);
   }
+
   Future<void> _onFetchUserData(
       FetchUserData event, Emitter<UserState> emit) async {
     try {
@@ -26,20 +27,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (user != null) {
         print("User Found...");
         emit(state.copyWith(
-          userData: user,
-          userDataFetchStatus: DataFetchStatus.done,
-            userAvailable: UserAvailable.available
-        ));
+            userData: user,
+            userDataFetchStatus: DataFetchStatus.done,
+            userAvailable: UserAvailable.available,
+        splashText: 'User Available...'));
       } else {
         print("User Not Found...");
         emit(state.copyWith(
-          userDataFetchStatus: DataFetchStatus.done,
-          userAvailable: UserAvailable.notAvailable
-        ));
+            userDataFetchStatus: DataFetchStatus.done,
+            userAvailable: UserAvailable.notAvailable,
+        splashText: 'Register new user...'));
       }
     } catch (e) {
       print("An error occur while fetching user data: ${e}");
-      emit(state.copyWith(userDataFetchStatus: DataFetchStatus.corrupted));
+      emit(state.copyWith(userDataFetchStatus: DataFetchStatus.corrupted,
+      splashText: 'An error occur...'));
     }
   }
 
@@ -61,19 +63,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         print('User registration failed.');
         emit(state.copyWith(
           userDataSetStatus: DataFetchStatus.corrupted,
-          error: 'Unable to register user..',
         ));
       }
     } catch (e) {
       print('An unexpected error occurred during registration.');
       emit(state.copyWith(
         userDataSetStatus: DataFetchStatus.corrupted,
-        error: 'An unexpected error occurred.',
       ));
     }
-  }
-
-  Future<void> _onSetErrorMsg(SetErrorMsg event, emit) async {
-    emit(state.copyWith(error: event.error));
   }
 }
