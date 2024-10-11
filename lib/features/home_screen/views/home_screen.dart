@@ -17,10 +17,11 @@ class HomePage extends StatelessWidget {
     return PageBase(
       child: Scaffold(
         appBar: AppBar(
-            backgroundColor: ColorPallet.mainColor,
-            title: Center(
-              child: CustomAppBar(title: Constants.appName),
-            )),
+          backgroundColor: ColorPallet.mainColor,
+          title: Center(
+            child: CustomAppBar(title: Constants.appName),
+          ),
+        ),
         backgroundColor: ColorPallet.backgroundColor,
         body: BlocBuilder<UserBloc, UserState>(
           builder: (context, userState) {
@@ -35,13 +36,13 @@ class HomePage extends StatelessWidget {
                   } else if (chatUserState.dataFetchStatus ==
                       DataFetchStatus.done) {
                     final users = chatUserState.appUsers;
-                    // final users = usersList;
                     if (users.isEmpty) {
                       return Center(
-                          child: NoUserAvailable(
-                        text: "You're the first user",
-                        icon: Icons.emoji_events,
-                      ));
+                        child: NoUserAvailable(
+                          text: "You're the first user",
+                          icon: Icons.emoji_events,
+                        ),
+                      );
                     }
                     return ListView.builder(
                       itemCount: users.length,
@@ -52,29 +53,33 @@ class HomePage extends StatelessWidget {
                           name: user.name,
                           deviceId: user.deviceId,
                           currentUserId: currentUser.deviceId,
+                          isOnline: user.isOnline,
                         );
                       },
                     );
                   } else if (chatUserState.dataFetchStatus ==
                       DataFetchStatus.corrupted) {
                     return Center(
-                        child: NoUserAvailable(
-                      text: 'Failed to load friends',
-                    ));
+                      child: NoUserAvailable(
+                        text: 'Failed to load friends',
+                      ),
+                    );
                   } else {
                     return Center(
-                        child: NoUserAvailable(
-                      text: 'No friends found',
-                    ));
+                      child: NoUserAvailable(
+                        text: 'No friends found',
+                      ),
+                    );
                   }
                 },
               );
             } else if (userState.userDataFetchStatus ==
                 DataFetchStatus.corrupted) {
               return Center(
-                  child: NoUserAvailable(
-                text: 'Failed to load friends data',
-              ));
+                child: NoUserAvailable(
+                  text: 'Failed to load friends data',
+                ),
+              );
             } else {
               return Center(child: CircularProgressIndicator());
             }
@@ -107,8 +112,7 @@ class User {
   final String deviceId;
   final String currentUserId;
 
-  User(
-      {required this.name,
-      required this.deviceId,
-      required this.currentUserId});
+  User({required this.name,
+    required this.deviceId,
+    required this.currentUserId});
 }

@@ -2,6 +2,7 @@ import 'package:chat_app/core/chat_user_bloc/chat_user_bloc.dart';
 import 'package:chat_app/core/user_bloc/user_bloc.dart';
 import 'package:chat_app/features/splash_screen/views/splash_screen.dart';
 import 'package:chat_app/screen_distributor.dart';
+import 'package:chat_app/services/device_service.dart';
 import 'package:chat_app/services/firebase_service.dart';
 import 'package:chat_app/core/app_status_bloc/app_status_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +21,46 @@ void main() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final FirebaseService _firebaseService = FirebaseService();
+  final DeviceService _deviceService = DeviceService();
+  late String deviceId;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeDevice();
+  }
+
+  @override
+  void dispose() {
+    _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: false);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+  Future<void> _initializeDevice() async {
+    deviceId = await _deviceService.getDeviceId();
+    _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: true);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.paused) {
+      print('App is in the background');
+      _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: false);
+    } else if (state == AppLifecycleState.resumed) {
+      print('App is resumed');
+      _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -37,13 +77,15 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: ScreenUtilInit(
-          designSize: Size(375, 800),
+          designSize: const Size(375, 800),
           minTextAdapt: true,
           splitScreenMode: true,
           builder: (context, child) {
             return Scaffold(
               body: SafeArea(
-                child: PageBase(child: SplashScreen(),),
+                child: PageBase(
+                  child: SplashScreen(),
+                ),
               ),
             );
           },

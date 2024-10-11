@@ -16,3 +16,9 @@ class SetUserData extends UserEvent {
     required this.fcmToken
   });
 }
+class UpdateOnlineStatus extends UserEvent {
+  final bool isOnline;
+  UpdateOnlineStatus({
+    required this.isOnline,
+});
+}

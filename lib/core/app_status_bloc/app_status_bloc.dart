@@ -23,7 +23,6 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
       ListenAppInfoData event,
       emit,
       ) async {
-    // Start listening to the stream
     _appInfoSubscription = firebaseService.getAppInfoDataStream().listen(
           (appInfoStatus) {
         if(appInfoStatus!=null){

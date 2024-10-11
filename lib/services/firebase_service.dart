@@ -34,6 +34,22 @@ class FirebaseService {
     });
   }
 
+  Stream<List<AppUser>> listenToAllUsersOnlineStatus(String myDeviceId) {
+    return firestoreDB.collection('users').snapshots().map((snapshot) {
+      return snapshot.docs.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return doc.id != myDeviceId;
+      }).map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return AppUser.fromJson(data);
+      }).toList();
+    }).handleError((error) {
+      print('Error listening to all users online status: $error');
+      return [];
+    });
+  }
+
+
   Future<AppUser?> fetchUserByDeviceId() async {
     print('========fetchUserByDeviceId()');
     try {
@@ -59,12 +75,14 @@ class FirebaseService {
     required String deviceId,
     required String name,
     String? fcmToken,
+    bool? isOnline,
   }) async {
     try {
       final Map<String, dynamic> userData = {
         'deviceId': deviceId,
         'name': name,
         'fcmToken': fcmToken ?? await _firebaseMessaging.getToken(),
+        'isOnline': true,
       };
 
       await firestoreDB.collection('users').doc(deviceId).set(userData);
@@ -107,4 +125,20 @@ class FirebaseService {
       return [];
     }
   }
+
+  Future<bool> updateUserStatus({
+    required String deviceId,
+    required bool isOnline,
+  }) async {
+    try {
+      await firestoreDB.collection('users').doc(deviceId).update({
+        'isOnline': isOnline,
+      });
+      return true;
+    } catch (e) {
+      print('Error updating user status: $e');
+      return false;
+    }
+  }
+
 }

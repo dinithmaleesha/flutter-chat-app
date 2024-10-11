@@ -50,6 +50,8 @@ class _SplashScreenState extends State<SplashScreen> {
               } else if (userState.userAvailable == UserAvailable.available) {
                 context.read<ChatUserBloc>().add(
                     FetchChatUserData(deviceId: userState.userData.deviceId));
+                context.read<ChatUserBloc>().add(
+                    ListenToUserStatus(userState.userData.deviceId));
               }
             } else if (userState.userDataFetchStatus ==
                 DataFetchStatus.corrupted) {

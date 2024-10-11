@@ -15,6 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this._firebaseService) : super(UserState.initial()) {
     on<FetchUserData>(_onFetchUserData);
     on<SetUserData>(_onSetUserData);
+    on<UpdateOnlineStatus>(_onUpdateOnlineStatus);
   }
 
   Future<void> _onFetchUserData(
@@ -70,6 +71,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(
         userDataSetStatus: DataFetchStatus.corrupted,
       ));
+    }
+  }
+  Future<void> _onUpdateOnlineStatus(UpdateOnlineStatus event, emit) async {
+    try {
+      _firebaseService.updateUserStatus(deviceId: state.userData.deviceId, isOnline: event.isOnline);
+      add(FetchUserData());
+    } catch (e) {
+      print('An error update online status: ${e}');
     }
   }
 }

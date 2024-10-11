@@ -8,12 +8,14 @@ class ChatUserCard extends StatelessWidget {
   final String name;
   final String deviceId;
   final String currentUserId;
+  final bool isOnline;
 
   const ChatUserCard({
     Key? key,
     required this.name,
     required this.deviceId,
     required this.currentUserId,
+    required this.isOnline,
   }) : super(key: key);
 
   @override
@@ -61,7 +63,7 @@ class ChatUserCard extends StatelessWidget {
                   height: 10,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.red,
+                    color: isOnline ? Colors.green : Colors.red,
                   ),
                 )
               ],
