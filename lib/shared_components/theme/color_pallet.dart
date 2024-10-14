@@ -8,6 +8,8 @@ class ColorPallet {
   static const backgroundColor = Color(0xFFF5F5F5);
   static const white = Colors.white;
   static const red = Color(0xFFC62828);
+  static const gray = Color(0xffe8edf3);
+  static const containerBackground = Color(0xFFD1C4E9);
 
   static const mainGradient = LinearGradient(
     colors: [mainColor, secondaryColor],
