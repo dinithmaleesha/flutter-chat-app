@@ -1,4 +1,9 @@
+import 'package:chat_app/features/chat_screen/views/chat_screen.dart';
+import 'package:chat_app/shared_components/theme/color_pallet.dart';
+import 'package:chat_app/shared_components/util/constants.dart';
+import 'package:chat_app/shared_components/widgets/footer_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UnderMaintenanceScreen extends StatelessWidget {
   const UnderMaintenanceScreen({super.key});
@@ -6,37 +11,47 @@ class UnderMaintenanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Center(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: ColorPallet.mainGradient,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.build,
-                color: Colors.orangeAccent,
-                size: 80,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Under Maintenance',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.build,
+                        color: ColorPallet.white,
+                        size: 80.h,
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        Constants.underMaintenanceTitle,
+                        style: TextStyle(
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: ColorPallet.white,
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Text(
+                        Constants.underMaintenanceSubtitle,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.white60,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                'We are currently performing some updates to improve your experience. '
-                    'Please check back later. We appreciate your patience!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black54,
-                ),
-              ),
-              SizedBox(height: 30),
+              FooterText(textColor: Colors.white60,),
             ],
           ),
         ),

@@ -2,11 +2,14 @@ import 'package:chat_app/features/chat_screen/widgets/chat_app_bar.dart';
 import 'package:chat_app/features/chat_screen/widgets/chat_bubble.dart';
 import 'package:chat_app/features/chat_screen/widgets/chat_screen_skeleton.dart';
 import 'package:chat_app/features/chat_screen/widgets/send_text_field.dart';
+import 'package:chat_app/screen_distributor.dart';
 import 'package:chat_app/services/chat_service.dart';
 import 'package:chat_app/shared_components/models/chat_model.dart';
 import 'package:chat_app/shared_components/theme/color_pallet.dart';
 import 'package:chat_app/shared_components/util/constants.dart';
+import 'package:chat_app/shared_components/util/images.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatScreen extends StatefulWidget {
   final String name;
@@ -59,102 +62,135 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ColorPallet.mainColor,
-        title: ChatAppBar(name: widget.name),
-        iconTheme: IconThemeData(
-          color: ColorPallet.white,
+    return PageBase(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: ColorPallet.mainColor,
+          title: ChatAppBar(name: widget.name),
+          iconTheme: IconThemeData(
+            color: ColorPallet.white,
+          ),
         ),
-      ),
-      backgroundColor: ColorPallet.backgroundColor,
-      body: Column(
-        children: [
-          FittedBox(
-            fit: BoxFit.contain,
-            child: Container(
-              margin: EdgeInsets.only(top: 10),
-              decoration: BoxDecoration(
-                color: ColorPallet.gray,
-                borderRadius: BorderRadius.circular(20),
+        backgroundColor: ColorPallet.backgroundColor,
+        body: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  color: ColorPallet.gray,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.warning, color: ColorPallet.grayColor, size: 10),
+                    SizedBox(width: 8),
+                    Text(
+                      Constants.privacy,
+                      style: TextStyle(fontSize: 11, color: ColorPallet.grayColor),
+                    ),
+                  ],
+                ),
               ),
-              padding: const EdgeInsets.all(8.0),
+            ),
+            Expanded(
+              child: StreamBuilder<List<ChatMessage>>(
+                stream: widget.chatService.getMessages(widget.senderId, widget.receiverId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // return CircularProgressIndicator();
+                  }
+                  // final messages = snapshot.data ?? [];
+                  final messages = snapshot.data ?? [];
+      
+                  if (messages.isEmpty) {
+                    return Center(
+                      child: Container(
+                        width: 250.w,
+                        height: 100.h,
+                        decoration: BoxDecoration(
+                          color: ColorPallet.white,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              ImageAssets.ghost,
+                              scale: 8,
+                              color: ColorPallet.grayColor,
+                            ),
+                            SizedBox(height: 5.h,),
+                            Text(
+                              Constants.noMessages,
+                              style: TextStyle(color: ColorPallet.grayColor, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+      
+                  if (messages.isNotEmpty) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollToBottom();
+                    });
+                  }
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding: EdgeInsets.only(bottom: 10),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final message = messages[index];
+                      final isMe = message.senderId == widget.senderId;
+      
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+                        child: Align(
+                          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                          child: ChatBubble(
+                            message: message.message,
+                            isMe: isMe,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            // Bottom bar
+            Container(
+              padding: EdgeInsets.all(10),
+              color: ColorPallet.white,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.warning, color: ColorPallet.grayColor, size: 10),
-                  SizedBox(width: 8),
-                  Text(
-                    Constants.privacy,
-                    style: TextStyle(fontSize: 11, color: ColorPallet.grayColor),
+                  Expanded(
+                    child: SendTextField(
+                      controller: widget.messageController,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: ColorPallet.mainGradient,
+                    ),
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(Icons.send, color: ColorPallet.white),
+                      onPressed: _sendMessage,
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<List<ChatMessage>>(
-              stream: widget.chatService.getMessages(widget.senderId, widget.receiverId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
-                final messages = snapshot.data ?? [];
-                if (messages.isNotEmpty) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _scrollToBottom();
-                  });
-                }
-                return ListView.builder(
-                  controller: _scrollController,
-                  padding: EdgeInsets.only(bottom: 10),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final message = messages[index];
-                    final isMe = message.senderId == widget.senderId;
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                      child: Align(
-                        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: ChatBubble(
-                          message: message.message,
-                          isMe: isMe,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          // Bottom bar
-          Container(
-            padding: EdgeInsets.all(10),
-            color: ColorPallet.white,
-            child: Row(
-              children: [
-                Expanded(
-                  child: SendTextField(
-                    controller: widget.messageController,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: ColorPallet.mainGradient,
-                  ),
-                  alignment: Alignment.center,
-                  child: IconButton(
-                    icon: Icon(Icons.send, color: ColorPallet.white),
-                    onPressed: _sendMessage,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

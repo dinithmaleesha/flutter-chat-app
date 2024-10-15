@@ -1,9 +1,13 @@
 import 'package:chat_app/features/register_screen/views/custom_button.dart';
+import 'package:chat_app/shared_components/util/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FooterText extends StatelessWidget {
+  final Color textColor;
+
+  const FooterText({super.key, this.textColor = Colors.black54});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +18,10 @@ class FooterText extends StatelessWidget {
           /// TODO: Implement URL launch
         },
         child: Text(
-          'Developed with ❤️ by Dinith Maleesha',
+          Constants.footerText,
           style: TextStyle(
             fontSize: 11,
-            color: Colors.black54,
+            color: textColor,
           ),
           textAlign: TextAlign.center,
         ),
