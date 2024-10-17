@@ -29,6 +29,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final FirebaseService _firebaseService = FirebaseService();
   final DeviceService _deviceService = DeviceService();
+  String version = '';
+
   late String deviceId;
   @override
   void initState() {
@@ -53,13 +55,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.paused) {
-      print('App is in the background');
+      print('App is in the background - isOnline: false');
       _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: false);
     } else if (state == AppLifecycleState.resumed) {
-      print('App is resumed');
+      print('App is resumed - isOnline: true');
       _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: true);
+    } else if (state == AppLifecycleState.detached) {
+      print('App is being detached - isOnline: false');
+      _firebaseService.updateUserStatus(deviceId: deviceId, isOnline: false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

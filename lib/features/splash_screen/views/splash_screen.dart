@@ -22,7 +22,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   PackageInfo? packageInfo;
   DeviceService deviceService = DeviceService();
-  String appVersion = 'v1';
+  String appVersion = '';
 
   @override
   void initState() {
@@ -31,6 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initialize() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
     context.read<UserBloc>().add(FetchUserData());
   }
 
