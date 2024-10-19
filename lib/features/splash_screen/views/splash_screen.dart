@@ -1,4 +1,5 @@
 import 'package:chat_app/core/chat_user_bloc/chat_user_bloc.dart';
+import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/features/home_screen/views/home_screen.dart';
 import 'package:chat_app/features/register_screen/views/custom_button.dart';
 import 'package:chat_app/features/register_screen/views/user_register_screen.dart';
@@ -33,13 +34,19 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _initialize() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
-    context.read<UserBloc>().add(FetchUserData());
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<ConnectivityBloc, ConnectivityState>(
+            listener: (context, connectivityState) {
+              if(connectivityState.hasInternet){
+                context.read<UserBloc>().add(FetchUserData());
+              }
+            }
+        ),
         BlocListener<UserBloc, UserState>(
           listener: (context, userState) {
             if (userState.userDataFetchStatus == DataFetchStatus.done) {
