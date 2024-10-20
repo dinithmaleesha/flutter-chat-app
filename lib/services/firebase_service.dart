@@ -17,7 +17,7 @@ class FirebaseService {
   DeviceService deviceService = DeviceService();
 
   Stream<AppInfoStatus?> getAppInfoDataStream() {
-    return firestoreDB.collection('app_config').doc('app_config').snapshots().map((snapshot) {
+    return firestoreDB.collection('app_config').doc('app_config').snapshots().asyncMap((snapshot) async {
       if (snapshot.exists) {
         print('Document found');
         return AppInfoStatus.fromJson({
@@ -25,14 +25,24 @@ class FirebaseService {
           ...snapshot.data()!,
         });
       } else {
-        print('No document found');
-        return null;
+        print('No document found. Creating document...');
+        await firestoreDB.collection('app_config').doc('app_config').set({
+          'update_status': false,
+          'is_maintaining': false,
+        });
+        print('Document created with default values.');
+        return AppInfoStatus.fromJson({
+          'documentId': 'app_config',
+          'update_status': false,
+          'is_maintaining': false,
+        });
       }
     }).handleError((error) {
       print('Failed to listen to app info data: $error');
       throw Exception('Failed to listen to app info data: $error');
     });
   }
+
 
   Stream<List<AppUser>> listenToAllUsersOnlineStatus(String myDeviceId) {
     return firestoreDB.collection('users').snapshots().map((snapshot) {

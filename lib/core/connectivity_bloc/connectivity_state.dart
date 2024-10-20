@@ -6,19 +6,22 @@ class ConnectivityState extends Equatable {
     required this.hasInternet,
     required this.connection,
     required this.isWifiOn,
+    required this.initialized
   });
 
   final bool isBluetoothOn;
   final bool hasInternet;
   final bool isWifiOn;
   final ConnectivityResult connection;
+  final bool initialized;
 
   factory ConnectivityState.initial() {
     return ConnectivityState(
-      isBluetoothOn: false,
-      isWifiOn: false,
-      hasInternet: false,
-      connection: ConnectivityResult.none,
+        isBluetoothOn: false,
+        isWifiOn: false,
+        hasInternet: true,
+        connection: ConnectivityResult.none,
+        initialized: false
     );
   }
 
@@ -27,12 +30,14 @@ class ConnectivityState extends Equatable {
     bool? hasInternet,
     bool? isWifiOn,
     ConnectivityResult? connection,
+    bool? initialized
   }) {
     return ConnectivityState(
-      isBluetoothOn: isBluetoothOn ?? this.isBluetoothOn,
-      isWifiOn: isWifiOn ?? this.isWifiOn,
-      hasInternet: hasInternet ?? this.hasInternet,
-      connection: connection ?? this.connection,
+        isBluetoothOn: isBluetoothOn ?? this.isBluetoothOn,
+        isWifiOn: isWifiOn ?? this.isWifiOn,
+        hasInternet: hasInternet ?? this.hasInternet,
+        connection: connection ?? this.connection,
+        initialized: initialized ?? this.initialized
     );
   }
 
@@ -41,6 +46,7 @@ class ConnectivityState extends Equatable {
     isBluetoothOn,
     isWifiOn,
     hasInternet,
-    connection
+    connection,
+    initialized
   ];
 }

@@ -23,11 +23,13 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  DeviceService deviceService = DeviceService();
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _errorMessage;
   late String _fcmToken = '';
   late String _deviceId = '';
+  String _appVersion = '';
   bool hasInternet = true;
 
   @override
@@ -38,6 +40,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Future<void> _initializeFCMToken() async {
     try {
+      _appVersion = await deviceService.getAppVersion();
       _deviceId = await DeviceService().getDeviceId() ?? '';
       _fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
       if (_deviceId.isEmpty || _fcmToken.isEmpty) {

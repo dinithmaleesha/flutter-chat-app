@@ -18,10 +18,12 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     on<UpdateConnectionStatus>(_onUpdateConnectionStatus);
     on<UpdateBluetoothStatus>(_onUpdateBluetoothStatus);
     on<CheckInternetConnectivity>(_onCheckInternetConnectivity);
+    on<UpdateInitializedStatus>(_onUpdateInitializedStatus);
     add(ListenToConnectivityStatus());
   }
 
   StreamSubscription? _connectivity;
+  bool isInitial = true;
 
   Future<void> _onListenToConnectivityStatus(
       ListenToConnectivityStatus event,
@@ -40,6 +42,8 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
             print("No internet.");
           }
         });
+    isInitial = false;
+    add(UpdateInitializedStatus(true));
   }
 
   Future<void> _onUpdateWifiStatus(
@@ -61,6 +65,12 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       emit,
       ) async {
     emit(state.copyWith(hasInternet: event.hasInternet));
+  }
+  Future<void> _onUpdateInitializedStatus(
+      UpdateInitializedStatus event,
+      emit,
+      ) async {
+    emit(state.copyWith(initialized: event.initialized));
   }
 
   Future<void> _onUpdateConnectionStatus(

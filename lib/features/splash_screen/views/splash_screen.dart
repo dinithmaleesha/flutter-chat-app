@@ -1,9 +1,7 @@
 import 'package:chat_app/core/chat_user_bloc/chat_user_bloc.dart';
 import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/features/home_screen/views/home_screen.dart';
-import 'package:chat_app/features/register_screen/views/custom_button.dart';
 import 'package:chat_app/features/register_screen/views/user_register_screen.dart';
-import 'package:chat_app/services/device_service.dart';
 import 'package:chat_app/shared_components/theme/color_pallet.dart';
 import 'package:chat_app/shared_components/util/constants.dart';
 import 'package:chat_app/shared_components/util/enums.dart';
@@ -21,8 +19,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  PackageInfo? packageInfo;
-  DeviceService deviceService = DeviceService();
   String appVersion = '';
 
   @override
@@ -42,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
       listeners: [
         BlocListener<ConnectivityBloc, ConnectivityState>(
           listener: (context, connectivityState) {
-            if (connectivityState.hasInternet) {
+            if (connectivityState.initialized && connectivityState.hasInternet) {
               context.read<UserBloc>().add(FetchUserData());
             } else {
               context.read<UserBloc>().add(

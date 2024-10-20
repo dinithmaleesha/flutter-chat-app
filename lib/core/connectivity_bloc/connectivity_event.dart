@@ -10,6 +10,11 @@ class UpdateBluetoothStatus extends ConnectivityEvent {
 
   UpdateBluetoothStatus(this.isBluetoothOn);
 }
+class UpdateInitializedStatus extends ConnectivityEvent {
+  final bool initialized;
+
+  UpdateInitializedStatus(this.initialized);
+}
 
 class UpdateInternetStatus extends ConnectivityEvent {
   final bool hasInternet;
