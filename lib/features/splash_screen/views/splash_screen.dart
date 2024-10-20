@@ -41,11 +41,14 @@ class _SplashScreenState extends State<SplashScreen> {
     return MultiBlocListener(
       listeners: [
         BlocListener<ConnectivityBloc, ConnectivityState>(
-            listener: (context, connectivityState) {
-              if(connectivityState.hasInternet){
-                context.read<UserBloc>().add(FetchUserData());
-              }
+          listener: (context, connectivityState) {
+            if (connectivityState.hasInternet) {
+              context.read<UserBloc>().add(FetchUserData());
+            } else {
+              context.read<UserBloc>().add(
+                  ChangeSplashText(splashText: 'No internet...'));
             }
+          },
         ),
         BlocListener<UserBloc, UserState>(
           listener: (context, userState) {
@@ -58,84 +61,81 @@ class _SplashScreenState extends State<SplashScreen> {
                 );
               } else if (userState.userAvailable == UserAvailable.available) {
                 context.read<ChatUserBloc>().add(
-                    FetchChatUserData(deviceId: userState.userData.deviceId));
+                  FetchChatUserData(deviceId: userState.userData.deviceId),
+                );
                 context.read<ChatUserBloc>().add(
-                    ListenToUserStatus(userState.userData.deviceId));
+                  ListenToUserStatus(userState.userData.deviceId),
+                );
               }
-            } else if (userState.userDataFetchStatus ==
-                DataFetchStatus.corrupted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to fetch user data')),
-              );
+            } else
+            if (userState.userDataFetchStatus == DataFetchStatus.corrupted) {
+              context.read<UserBloc>().add(
+                  ChangeSplashText(splashText: 'Failed to fetch user data'));
             }
           },
         ),
         BlocListener<ChatUserBloc, ChatUserState>(
-            listener: (context, chatUserState) {
-              if (chatUserState.dataFetchStatus == DataFetchStatus.done) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              }
-            })
+          listener: (context, chatUserState) {
+            if (chatUserState.dataFetchStatus == DataFetchStatus.done) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }
+          },
+        ),
       ],
       child: Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  ColorPallet.mainColor,
-                  ColorPallet.secondaryColor,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [ColorPallet.mainColor, ColorPallet.secondaryColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: BlocBuilder<UserBloc, UserState>(
-              builder: (context, userState) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          Constants.appName,
-                          style: TextStyle(
-                              fontSize: 28,
-                              color: ColorPallet.white,
-                              fontWeight: FontWeight.bold
-                          ),
+          ),
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, userState) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        Constants.appName,
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: ColorPallet.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          userState.splashText,
-                          style: TextStyle(
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        userState.splashText,
+                        style: TextStyle(
                             fontSize: 16,
                             color: ColorPallet.white,
-                          ),
                         ),
-                        SizedBox(height: 15.h,),
-                        Text(
-                          appVersion,
-                          style: TextStyle(
+                      ),
+                      SizedBox(height: 15.h),
+                      Text(
+                        appVersion,
+                        style: TextStyle(
                             fontSize: 12,
                             color: ColorPallet.grayColor,
-                          ),
                         ),
-                        SizedBox(height: 5.h,),
-                      ],
-                    ),
-                  ],
-                );
-              },
-            ),
-          )
-
-
+                      ),
+                      SizedBox(height: 5.h),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

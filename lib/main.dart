@@ -88,21 +88,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create: (context) => ChatUserBloc(FirebaseService.instance),
         )
       ],
-      child: MaterialApp(
-        home: ScreenUtilInit(
-          designSize: const Size(375, 800),
-          minTextAdapt: true,
-          splitScreenMode: true,
-          builder: (context, child) {
-            return Scaffold(
+      child: ScreenUtilInit(
+        designSize: const Size(375, 800),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp(
+            home: Scaffold(
               body: SafeArea(
                 child: PageBase(
                   child: SplashScreen(),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

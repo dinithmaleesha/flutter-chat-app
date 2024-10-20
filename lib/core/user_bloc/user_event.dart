@@ -22,3 +22,8 @@ class UpdateOnlineStatus extends UserEvent {
     required this.isOnline,
 });
 }
+
+class ChangeSplashText extends UserEvent {
+  final String splashText;
+  ChangeSplashText({required this.splashText});
+}

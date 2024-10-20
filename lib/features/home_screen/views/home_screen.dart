@@ -1,4 +1,5 @@
 import 'package:chat_app/core/chat_user_bloc/chat_user_bloc.dart';
+import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/core/user_bloc/user_bloc.dart';
 import 'package:chat_app/features/home_screen/widgets/app_bar.dart';
 import 'package:chat_app/features/home_screen/widgets/chat_user_card.dart';
@@ -7,6 +8,8 @@ import 'package:chat_app/screen_distributor.dart';
 import 'package:chat_app/shared_components/theme/color_pallet.dart';
 import 'package:chat_app/shared_components/util/constants.dart';
 import 'package:chat_app/shared_components/util/enums.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,66 +26,72 @@ class HomePage extends StatelessWidget {
           ),
         ),
         backgroundColor: ColorPallet.backgroundColor,
-        body: BlocBuilder<UserBloc, UserState>(
-          builder: (context, userState) {
-            if (userState.userDataFetchStatus == DataFetchStatus.done &&
-                userState.userAvailable == UserAvailable.available) {
-              final currentUser = userState.userData;
+        body: BlocBuilder<ConnectivityBloc, ConnectivityState>(
+          builder: (context, connectivityState) {
+            return BlocBuilder<UserBloc, UserState>(
+              builder: (context, userState) {
+                if (userState.userDataFetchStatus == DataFetchStatus.done &&
+                    userState.userAvailable == UserAvailable.available &&
+                    connectivityState.hasInternet) {
+                  final currentUser = userState.userData;
 
-              return BlocBuilder<ChatUserBloc, ChatUserState>(
-                builder: (context, chatUserState) {
-                  if (chatUserState.dataFetchStatus != DataFetchStatus.done) {
-                    return Center(child: NoUserAvailable());
-                  } else if (chatUserState.dataFetchStatus ==
-                      DataFetchStatus.done) {
-                    final users = chatUserState.appUsers;
-                    if (users.isEmpty) {
-                      return Center(
-                        child: NoUserAvailable(
-                          text: "You're the first user",
-                          icon: Icons.emoji_events,
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        final user = users[index];
+                  return BlocBuilder<ChatUserBloc, ChatUserState>(
+                    builder: (context, chatUserState) {
+                      if (chatUserState.dataFetchStatus !=
+                          DataFetchStatus.done) {
+                        return Center(child: NoUserAvailable());
+                      } else if (chatUserState.dataFetchStatus ==
+                          DataFetchStatus.done) {
+                        final users = chatUserState.appUsers;
+                        if (users.isEmpty) {
+                          return Center(
+                            child: NoUserAvailable(
+                              text: "You're the first user",
+                              icon: Icons.emoji_events,
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            final user = users[index];
 
-                        return ChatUserCard(
-                          name: user.name,
-                          deviceId: user.deviceId,
-                          currentUserId: currentUser.deviceId,
-                          isOnline: user.isOnline,
+                            return ChatUserCard(
+                              name: user.name,
+                              deviceId: user.deviceId,
+                              currentUserId: currentUser.deviceId,
+                              isOnline: user.isOnline,
+                            );
+                          },
                         );
-                      },
-                    );
-                  } else if (chatUserState.dataFetchStatus ==
-                      DataFetchStatus.corrupted) {
-                    return Center(
-                      child: NoUserAvailable(
-                        text: 'Failed to load friends',
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: NoUserAvailable(
-                        text: 'No friends found',
-                      ),
-                    );
-                  }
-                },
-              );
-            } else if (userState.userDataFetchStatus ==
-                DataFetchStatus.corrupted) {
-              return Center(
-                child: NoUserAvailable(
-                  text: 'Failed to load friends data',
-                ),
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
+                      } else if (chatUserState.dataFetchStatus ==
+                          DataFetchStatus.corrupted) {
+                        return Center(
+                          child: NoUserAvailable(
+                            text: 'Failed to load friends',
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: NoUserAvailable(
+                            text: 'No friends found',
+                          ),
+                        );
+                      }
+                    },
+                  );
+                } else if (userState.userDataFetchStatus ==
+                    DataFetchStatus.corrupted) {
+                  return Center(
+                    child: NoUserAvailable(
+                      text: 'Failed to load friends data',
+                    ),
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            );
           },
         ),
       ),

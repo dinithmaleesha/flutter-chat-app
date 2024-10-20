@@ -16,6 +16,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<FetchUserData>(_onFetchUserData);
     on<SetUserData>(_onSetUserData);
     on<UpdateOnlineStatus>(_onUpdateOnlineStatus);
+    on<ChangeSplashText>(_onChangeSplashText);
   }
 
   Future<void> _onFetchUserData(
@@ -80,5 +81,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e) {
       print('An error update online status: ${e}');
     }
+  }
+  Future<void> _onChangeSplashText(ChangeSplashText event, emit) async {
+    emit(state.copyWith(splashText: event.splashText));
   }
 }

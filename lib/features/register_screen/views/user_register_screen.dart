@@ -1,3 +1,4 @@
+import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/core/user_bloc/user_bloc.dart';
 import 'package:chat_app/features/register_screen/views/custom_button.dart';
 import 'package:chat_app/features/splash_screen/views/splash_screen.dart';
@@ -27,6 +28,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String? _errorMessage;
   late String _fcmToken = '';
   late String _deviceId = '';
+  bool hasInternet = true;
 
   @override
   void initState() {
@@ -53,6 +55,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void _register() {
+    if (!hasInternet) {
+      setState(() {
+        _errorMessage = 'No internet connection. Please try again.';
+      });
+      return;
+    }
     final name = _nameController.text;
 
     if (name.isEmpty) {
@@ -76,9 +84,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
       setState(() {
         _errorMessage = null;
       });
-      context.read<UserBloc>().add(SetUserData(name: name, deviceId: _deviceId, fcmToken: _fcmToken));
+      context.read<UserBloc>().add(
+          SetUserData(name: name, deviceId: _deviceId, fcmToken: _fcmToken));
     }
-
   }
 
   @override
@@ -90,15 +98,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return PageBase(
-      child: BlocListener<UserBloc, UserState>(
-        listener: (context, userState) {
-          if (userState.userDataSetStatus == DataFetchStatus.done) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => SplashScreen()),
-            );
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<UserBloc, UserState>(
+            listener: (context, userState) {
+              if (userState.userDataSetStatus == DataFetchStatus.done) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SplashScreen()),
+                );
+              }
+            },
+          ),
+          BlocListener<ConnectivityBloc, ConnectivityState>(
+            listener: (context, connectivityState) {
+              setState(() {
+                hasInternet = connectivityState.hasInternet;
+              });
+              if (!connectivityState.hasInternet) {
+                setState(() {
+                  _errorMessage = 'No internet connection.';
+                });
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: ColorPallet.backgroundColor,
           body: Column(
@@ -129,7 +153,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     Form(
                       key: _formKey,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 20.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
