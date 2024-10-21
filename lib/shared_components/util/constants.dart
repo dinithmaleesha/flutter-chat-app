@@ -8,6 +8,14 @@ class Constants {
       'Register now to start your chatting experience.';
   static const String buttonText = 'Register';
 
+  //home screen
+  static const String noInternet = 'Oops! No internet connection.';
+  static const String noUserAvailable = 'No User Available';
+  static const String firstUser = 'You\'re the first user';
+  static const String failedToLoadFriend = 'Failed to load friends';
+  static const String noFriendFound = 'No friends found';
+  static const String failedToLoadData = 'Failed to load friends data';
+
   //chat screen
   static const String message = 'Message';
   static const String privacy = 'Privacy? Not here yet, but stay tuned!';
