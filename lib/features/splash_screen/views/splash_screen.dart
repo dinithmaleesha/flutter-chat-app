@@ -2,6 +2,7 @@ import 'package:chat_app/core/chat_user_bloc/chat_user_bloc.dart';
 import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/features/home_screen/views/home_screen.dart';
 import 'package:chat_app/features/register_screen/views/user_register_screen.dart';
+import 'package:chat_app/screen_distributor.dart';
 import 'package:chat_app/shared_components/theme/color_pallet.dart';
 import 'package:chat_app/shared_components/util/constants.dart';
 import 'package:chat_app/shared_components/util/enums.dart';
@@ -28,8 +29,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initialize() async {
+    print('Splash Screen initialized');
+    context.read<UserBloc>().add(FetchUserData());
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    appVersion = packageInfo.version;
+    setState(() {
+      appVersion = packageInfo.version;
+    });
   }
 
   @override
@@ -50,7 +55,6 @@ class _SplashScreenState extends State<SplashScreen> {
           listener: (context, userState) {
             if (userState.userDataFetchStatus == DataFetchStatus.done) {
               if (userState.userAvailable == UserAvailable.notAvailable) {
-                print('===== Open Register Page');
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => RegistrationPage()),
@@ -63,8 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ListenToUserStatus(userState.userData.deviceId),
                 );
               }
-            } else
-            if (userState.userDataFetchStatus == DataFetchStatus.corrupted) {
+            } else if (userState.userDataFetchStatus == DataFetchStatus.corrupted) {
               context.read<UserBloc>().add(
                   ChangeSplashText(splashText: 'Failed to fetch user data'));
             }
@@ -82,54 +85,56 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ],
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [ColorPallet.mainColor, ColorPallet.secondaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        body: PageBase(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [ColorPallet.mainColor, ColorPallet.secondaryColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
-          ),
-          child: BlocBuilder<UserBloc, UserState>(
-            builder: (context, userState) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        Constants.appName,
-                        style: TextStyle(
-                          fontSize: 28,
-                          color: ColorPallet.white,
-                          fontWeight: FontWeight.bold,
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, userState) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          Constants.appName,
+                          style: TextStyle(
+                            fontSize: 28,
+                            color: ColorPallet.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        userState.splashText,
-                        style: TextStyle(
+                    Column(
+                      children: [
+                        Text(
+                          userState.splashText,
+                          style: TextStyle(
                             fontSize: 16,
                             color: ColorPallet.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Text(
-                        appVersion,
-                        style: TextStyle(
+                        SizedBox(height: 15.h),
+                        Text(
+                          appVersion,
+                          style: TextStyle(
                             fontSize: 12,
                             color: ColorPallet.grayColor,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 5.h),
-                    ],
-                  ),
-                ],
-              );
-            },
+                        SizedBox(height: 5.h),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

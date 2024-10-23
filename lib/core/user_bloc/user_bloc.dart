@@ -77,7 +77,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onUpdateOnlineStatus(UpdateOnlineStatus event, emit) async {
     try {
       _firebaseService.updateUserStatus(deviceId: state.userData.deviceId, isOnline: event.isOnline);
-      add(FetchUserData());
+      // add(FetchUserData());
     } catch (e) {
       print('An error update online status: ${e}');
     }
