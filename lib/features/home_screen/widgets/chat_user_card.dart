@@ -1,4 +1,4 @@
-import 'package:chat_app/features/register_screen/views/custom_button.dart';
+import 'package:chat_app/shared_components/widgets/custom_button.dart';
 import 'package:chat_app/shared_components/theme/color_pallet.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/features/chat_screen/views/chat_screen.dart';

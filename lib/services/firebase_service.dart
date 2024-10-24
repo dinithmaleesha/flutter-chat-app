@@ -26,15 +26,18 @@ class FirebaseService {
         });
       } else {
         print('No document found. Creating document...');
+        final String currentAppVersion = await deviceService.getAppVersion();
         await firestoreDB.collection('app_config').doc('app_config').set({
           'update_status': false,
           'is_maintaining': false,
+          'app_version' : currentAppVersion,
         });
         print('Document created with default values.');
         return AppInfoStatus.fromJson({
           'documentId': 'app_config',
           'update_status': false,
           'is_maintaining': false,
+          'app_version' : currentAppVersion,
         });
       }
     }).handleError((error) {

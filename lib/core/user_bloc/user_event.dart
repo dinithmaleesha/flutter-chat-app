@@ -27,3 +27,7 @@ class ChangeSplashText extends UserEvent {
   final String splashText;
   ChangeSplashText({required this.splashText});
 }
+
+class SetCurrentAppVersion extends UserEvent {
+  SetCurrentAppVersion();
+}

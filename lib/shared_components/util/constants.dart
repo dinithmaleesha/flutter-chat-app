@@ -27,8 +27,12 @@ class Constants {
   static const String underMaintenanceSubtitle =
       'We’re busy giving our app a makeover.\nDon’t worry; we’ll be back looking fabulous in no time!';
   static const String updateAvailable = 'New Look, New Features!';
-  static const String updateAvailableSubtitle = 'We\'ve polished things up and added some cool new tools. Update now to keep things fresh!';
+  static const String updateAvailableSubtitle =
+      'We\'ve polished things up and added some cool new tools. Update now to keep things fresh!';
+
+  static const String newUpdate = 'Get the Latest Version with New Features!';
+  static const String newUpdateSubtitle = 'Our latest update includes new features and improvements. Update now to enjoy the enhancements!';
+  static const String updateNow = 'Get the Latest Version';
   //footer text
   static const String footerText = 'Developed with ❤️ by Dinith Maleesha';
-
 }

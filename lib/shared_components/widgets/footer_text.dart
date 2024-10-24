@@ -1,4 +1,4 @@
-import 'package:chat_app/features/register_screen/views/custom_button.dart';
+import 'package:chat_app/shared_components/widgets/custom_button.dart';
 import 'package:chat_app/shared_components/util/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

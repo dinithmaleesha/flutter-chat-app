@@ -7,13 +7,15 @@ class UserState extends Equatable {
   final DataFetchStatus userDataSetStatus;
   final UserAvailable userAvailable;
   final String splashText;
+  final String currentAppVersion;
 
   UserState({
     required this.userData,
     required this.userDataFetchStatus,
     required this.userDataSetStatus,
     required this.userAvailable,
-    required this.splashText});
+    required this.splashText,
+    required this.currentAppVersion});
 
   factory UserState.initial() {
     return UserState(
@@ -22,6 +24,7 @@ class UserState extends Equatable {
       userDataSetStatus: DataFetchStatus.initial,
       userAvailable: UserAvailable.notAvailable,
       splashText: 'Launching...',
+      currentAppVersion: '',
     );
   }
 
@@ -31,6 +34,7 @@ class UserState extends Equatable {
     DataFetchStatus? userDataSetStatus,
     UserAvailable? userAvailable,
     String? splashText,
+    String? currentAppVersion,
   }) {
     return UserState(
       userData: userData ?? this.userData,
@@ -38,6 +42,7 @@ class UserState extends Equatable {
       userDataSetStatus: userDataSetStatus ?? this.userDataSetStatus,
       userAvailable: userAvailable ?? this.userAvailable,
       splashText: splashText ?? this.splashText,
+      currentAppVersion: currentAppVersion ?? this.currentAppVersion,
     );
   }
 
@@ -48,6 +53,7 @@ class UserState extends Equatable {
     userDataFetchStatus,
     userDataSetStatus,
     userAvailable,
-    splashText
+    splashText,
+    currentAppVersion
   ];
 }

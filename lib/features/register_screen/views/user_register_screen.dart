@@ -1,6 +1,6 @@
 import 'package:chat_app/core/connectivity_bloc/connectivity_bloc.dart';
 import 'package:chat_app/core/user_bloc/user_bloc.dart';
-import 'package:chat_app/features/register_screen/views/custom_button.dart';
+import 'package:chat_app/shared_components/widgets/custom_button.dart';
 import 'package:chat_app/features/splash_screen/views/splash_screen.dart';
 import 'package:chat_app/screen_distributor.dart';
 import 'package:chat_app/services/device_service.dart';

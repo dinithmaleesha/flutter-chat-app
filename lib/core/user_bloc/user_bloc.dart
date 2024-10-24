@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:chat_app/services/device_service.dart';
 import 'package:chat_app/services/firebase_service.dart';
 import 'package:chat_app/shared_components/models/app_user.dart';
 import 'package:chat_app/shared_components/util/enums.dart';
@@ -17,6 +18,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<SetUserData>(_onSetUserData);
     on<UpdateOnlineStatus>(_onUpdateOnlineStatus);
     on<ChangeSplashText>(_onChangeSplashText);
+    on<SetCurrentAppVersion>(_onSetCurrentAppVersion);
+    add(SetCurrentAppVersion());
   }
 
   Future<void> _onFetchUserData(
@@ -84,5 +87,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
   Future<void> _onChangeSplashText(ChangeSplashText event, emit) async {
     emit(state.copyWith(splashText: event.splashText));
+  }
+  Future<void> _onSetCurrentAppVersion(SetCurrentAppVersion event, emit) async {
+    final String currentAppVersion = await DeviceService().getAppVersion();
+    emit(state.copyWith(currentAppVersion: currentAppVersion));
   }
 }

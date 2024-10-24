@@ -25,7 +25,6 @@ class DeviceService {
   }
 
   Future<String> getAppVersion() async {
-    print('run getAppVersion');
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
