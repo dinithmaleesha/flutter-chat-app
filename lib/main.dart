@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'shared_components/widgets/error_msg.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -103,31 +105,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class ErrorApp extends StatelessWidget {
-  final String errorMessage;
-
-  const ErrorApp(this.errorMessage);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text(
-            'Failed to initialize Firebase: $errorMessage',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
       ),
     );
   }
