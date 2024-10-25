@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/services/device_service.dart';
 import 'package:chat_app/services/firebase_service.dart';
 import 'package:chat_app/shared_components/models/app_info_status.dart';
 import 'package:chat_app/shared_components/util/enums.dart';
@@ -34,10 +33,6 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
         print('AppInfoStatus data stream has error');
       },
     );
-    final String currentAppVersion = await DeviceService().getAppVersion();
-    if(state.appInfoStatus.appVersion != currentAppVersion) {
-      print('App version mismatch: Update available');
-    }
   }
 
   Future<void> _onUpdateAppInfoData(

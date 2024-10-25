@@ -30,8 +30,8 @@ class PageBase extends StatelessWidget {
                   return const UpdateAvailableScreen();
                 } else if (appStatus.appInfoStatus.isMaintaining) {
                   return const UnderMaintenanceScreen();
-                } else if (appStatus.appInfoStatus.appVersion !=
-                    userState.currentAppVersion) {
+                } else if (appStatus.appInfoStatus.appVersion != '' && (appStatus.appInfoStatus.appVersion !=
+                    userState.currentAppVersion)) {
                   return UpdateAvailableScreen(
                     updateMessage: Constants.newUpdate,
                     updateSubtitle: Constants.newUpdateSubtitle,

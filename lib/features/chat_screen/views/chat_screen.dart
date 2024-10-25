@@ -154,6 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                           child: ChatBubble(
                             message: message.message,
+                            time: message.timestamp,
                             isMe: isMe,
                           ),
                         ),
