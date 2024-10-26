@@ -21,6 +21,7 @@ class Constants {
   static const String privacy = 'Privacy? Not here yet, but stay tuned!';
   static const String privacy2 = 'Our encryption skills are still loading...';
   static const String noMessages = 'It’s a ghost town in here...';
+  static const String reconnect = 'We’re working to reconnect you. Please wait...';
 
   //shared widgets
   static const String underMaintenanceTitle = 'Maintenance Mode Activated!';
