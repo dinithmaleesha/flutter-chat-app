@@ -13,7 +13,7 @@ class AppInfoStatus {
     return AppInfoStatus(
       updateAvailable: false,
       isMaintaining: false,
-      appVersion: '1.0.0',
+      appVersion: '',
     );
   }
 

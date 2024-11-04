@@ -30,11 +30,13 @@ class HomePage extends StatelessWidget {
                 if (connectivityState.initialized &&
                     !connectivityState.hasInternet) {
                   return Center(
-                      child: ErrorDisplay(
-                    message: Constants.noInternet,
-                    icon: Icons.wifi_off_rounded,
-                  ));
+                    child: ErrorDisplay(
+                      message: Constants.noInternet,
+                      icon: Icons.wifi_off_rounded,
+                    ),
+                  );
                 }
+
                 if (userState.userDataFetchStatus == DataFetchStatus.done &&
                     userState.userAvailable == UserAvailable.available &&
                     connectivityState.hasInternet) {
@@ -45,10 +47,11 @@ class HomePage extends StatelessWidget {
                       if (chatUserState.dataFetchStatus !=
                           DataFetchStatus.done) {
                         return Center(
-                            child: ErrorDisplay(
-                          message: Constants.noUserAvailable,
-                          icon: Icons.person_off,
-                        ));
+                          child: ErrorDisplay(
+                            message: Constants.noUserAvailable,
+                            icon: Icons.person_off,
+                          ),
+                        );
                       } else if (chatUserState.dataFetchStatus ==
                           DataFetchStatus.done) {
                         final users = chatUserState.appUsers;
@@ -64,7 +67,6 @@ class HomePage extends StatelessWidget {
                           itemCount: users.length,
                           itemBuilder: (context, index) {
                             final user = users[index];
-
                             return ChatUserCard(
                               name: user.name,
                               deviceId: user.deviceId,
@@ -77,14 +79,16 @@ class HomePage extends StatelessWidget {
                           DataFetchStatus.corrupted) {
                         return Center(
                           child: ErrorDisplay(
-                              message: Constants.failedToLoadFriend,
-                              icon: Icons.group_off),
+                            message: Constants.failedToLoadFriend,
+                            icon: Icons.group_off,
+                          ),
                         );
                       } else {
                         return Center(
                           child: ErrorDisplay(
-                              message: Constants.noFriendFound,
-                              icon: Icons.person_search),
+                            message: Constants.noFriendFound,
+                            icon: Icons.person_search,
+                          ),
                         );
                       }
                     },
@@ -93,8 +97,9 @@ class HomePage extends StatelessWidget {
                     DataFetchStatus.corrupted) {
                   return Center(
                     child: ErrorDisplay(
-                        message: Constants.failedToLoadData,
-                        icon: Icons.cloud_off),
+                      message: Constants.failedToLoadData,
+                      icon: Icons.cloud_off,
+                    ),
                   );
                 } else {
                   return Center(child: CircularProgressIndicator());
