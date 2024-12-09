@@ -97,6 +97,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: SafeArea(
                 child: PageBase(
